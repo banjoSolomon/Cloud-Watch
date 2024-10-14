@@ -37,13 +37,18 @@ jobs:
       - name: Build Docker image
         run: docker build -t solomon11/cloud:latest .
 
+      - name: Scan Docker image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.20.0  # Use the specified version
+        with:
+          image-ref: solomon11/cloud:latest  # Reference the built image
+          format: 'table'                      # Format of the scan report
+          exit-code: '1'                       # Fail the job if vulnerabilities are found
+          ignore-unfixed: true                  # Ignore unfixed vulnerabilities
+          vuln-type: 'os,library'              # Scan for OS and library vulnerabilities
+          severity: 'CRITICAL,HIGH'            # Focus on critical and high severity
+
       - name: Push Docker image to Docker Hub
         run: docker push solomon11/cloud:latest
 
       - name: Run Docker container with memory limit
         run: docker run -d -p 8080:8080 --memory="128m" solomon11/cloud:latest
-
-      - name: Scan Docker image for vulnerabilities
-        uses: aquasecurity/trivy-action@v0.20.0
-        with:
-          image-ref: solomon11/cloud:latest
