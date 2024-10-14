@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('/*.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}  # Adjusted to search for XML files in subdirectories as well.
           restore-keys: |
             ${{ runner.os }}-maven-
 
@@ -61,8 +61,9 @@ jobs:
           vuln-type: os,library
           severity: CRITICAL,HIGH
           scan-type: image
-          scan-ref: .
           list-all-pkgs: false
 
       - name: Cleanup Docker container
-        run: docker stop $(docker ps -q --filter ancestor=solomon11/cloud:latest) && docker rm $(docker ps -aq --filter ancestor=solomon11/cloud:latest)
+        run: |
+          docker stop $(docker ps -q --filter ancestor=solomon11/cloud:latest) && \
+          docker rm $(docker ps -aq --filter ancestor=solomon11/cloud:latest)
