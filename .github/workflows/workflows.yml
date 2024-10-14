@@ -63,3 +63,6 @@ jobs:
           scan-type: image
           scan-ref: .
           list-all-pkgs: false
+
+      - name: Cleanup Docker container
+        run: docker stop $(docker ps -q --filter ancestor=solomon11/cloud:latest) && docker rm $(docker ps -aq --filter ancestor=solomon11/cloud:latest)
