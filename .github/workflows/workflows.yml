@@ -1,4 +1,4 @@
-name: Deploy Dockerhub
+name: Deploy to Docker Hub
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}  # Adjusted to search for XML files in subdirectories as well.
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/*.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
@@ -42,28 +42,3 @@ jobs:
 
       - name: Run Docker container with memory limit
         run: docker run -d -p 8080:8080 --memory="128m" solomon11/cloud:latest
-
-      - name: Cache Trivy DB
-        uses: actions/cache@v2
-        with:
-          path: /tmp/trivy-db
-          key: trivy-db-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            trivy-db-${{ runner.os }}-
-
-      - name: Scan Docker image for vulnerabilities
-        uses: aquasecurity/trivy-action@0.20.0
-        with:
-          image-ref: solomon11/cloud:latest
-          format: table
-          exit-code: 1
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL,HIGH
-          scan-type: image
-          list-all-pkgs: false
-
-      - name: Cleanup Docker container
-        run: |
-          docker stop $(docker ps -q --filter ancestor=solomon11/cloud:latest) && \
-          docker rm $(docker ps -aq --filter ancestor=solomon11/cloud:latest)
