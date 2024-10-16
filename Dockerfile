@@ -11,5 +11,4 @@ RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
 USER appuser
 EXPOSE 8080
 
-# Properly structure the ENTRYPOINT command
 ENTRYPOINT ["java", "-jar", "Cloud-Watch.jar"]

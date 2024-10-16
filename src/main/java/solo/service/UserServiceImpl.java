@@ -15,17 +15,23 @@ public class UserServiceImpl implements UserService{
         this.userRepository = userRepository;
     }
 
-    public void registerUserUsingFibonacci(int number , RegisterRequest request){
-        int num = 0 , num2 = 1;
-        for(int count = 0 ; count < number; count++){
-            registerUser(request);
-            int nextNumber = num + num2;
-            num = num2;
-            num2 = nextNumber;
-            System.out.print("Register User with fibonacci : " + num2);
-        }
-    }
+   public static int Fibonacci(int number){
+        int num1 = 0; int num2 = 1;
+        System.out.print("Fibonacci Series: " + num1 + " " + num2);
 
+        for(int count = 1; count < number; count++){
+            int nextNumber = num1 +num2;
+            System.out.print(" " + nextNumber);
+            num1 = num2;
+            num2 = nextNumber;
+        }
+        return num2;
+   }
+    public static void main(String[] args) {
+        int number = 5;
+        int scale = Fibonacci(number);
+        System.out.println("Scale app to " + scale + " replicas.");
+    }
     @Override
     public RegisterRequestResponse registerUser(RegisterRequest request) {
         User user = new User();
